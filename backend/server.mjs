@@ -13,7 +13,6 @@ app.use((req, res, next) => {
     .split(",")
     .map((url) => url.trim())
     .filter(Boolean);
-
   if (frontendOrigins.includes(origin)) {
     res.set("Access-Control-Allow-Origin", origin);
     res.set("Vary", "Origin");
