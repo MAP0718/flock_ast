@@ -6,7 +6,7 @@
   "author": "",
   "type": "commonjs",
   "scripts": {
-    "build": "node --env-file=.env build.mjs",
+    "build": "node build.mjs",
     "dev": "npm run build && node --env-file=.env server.mjs",
     "start": "npm run dev"
   },
