@@ -1,0 +1,310 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f4f6f8;
+  color: #202938;
+  font-family: Arial, sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.page {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 36px 0;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.logout-button {
+  float: right;
+}
+
+.logout-error {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #53677f;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 8px;
+  font-size: 28px;
+}
+
+h2 {
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.subheading,
+.section-heading p,
+.pagination,
+.empty-details {
+  color: #687588;
+}
+
+.subheading {
+  margin-bottom: 0;
+}
+
+.panel {
+  margin-bottom: 20px;
+  padding: 22px;
+  border: 1px solid #e1e6ec;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.section-heading p {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.search-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #cfd6df;
+  border-radius: 5px;
+}
+
+button {
+  padding: 9px 14px;
+  border: 1px solid #cfd6df;
+  border-radius: 5px;
+  background: #fff;
+  color: #202938;
+  cursor: pointer;
+}
+
+.search-form button {
+  border-color: #245a9c;
+  background: #245a9c;
+  color: #fff;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th,
+td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e8ebef;
+  font-size: 14px;
+}
+
+th {
+  color: #687588;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+tbody tr {
+  cursor: pointer;
+}
+
+tbody tr:hover,
+.selected-row {
+  background: #f5f8fc;
+}
+
+.meter-link {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #245a9c;
+  font-weight: 700;
+}
+
+.status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: #eef1f4;
+  color: #4d5968;
+  font-size: 12px;
+}
+
+.status.installed {
+  background: #e8f5ed;
+  color: #286c42;
+}
+
+.status.faulty {
+  background: #fff2df;
+  color: #875816;
+}
+
+.status.decommissioned {
+  background: #fbe9e9;
+  color: #963c3c;
+}
+
+.table-message {
+  padding: 24px;
+  color: #687588;
+  text-align: center;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16px;
+  font-size: 14px;
+}
+
+.pagination div {
+  display: flex;
+  gap: 8px;
+}
+
+.details-panel {
+  min-height: 150px;
+}
+
+.empty-details,
+.message {
+  margin: 0;
+  font-size: 14px;
+}
+
+.error {
+  margin-bottom: 14px;
+  color: #a73535;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  padding: 6px 0 24px;
+}
+
+.detail-item span,
+.detail-item strong {
+  display: block;
+}
+
+.detail-item span {
+  margin-bottom: 6px;
+  color: #687588;
+  font-size: 13px;
+}
+
+.detail-item strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.readings-heading {
+  margin-bottom: 8px;
+}
+
+.readings-table {
+  max-height: 360px;
+}
+
+.login-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 20px;
+}
+
+.login-form {
+  display: grid;
+  width: min(100%, 380px);
+  gap: 12px;
+  padding: 24px;
+  border: 1px solid #e1e6ec;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.login-form h1,
+.login-form .subheading {
+  margin-bottom: 0;
+}
+
+.login-form label {
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cfd6df;
+  border-radius: 5px;
+}
+
+.login-form button {
+  margin-top: 8px;
+  border-color: #245a9c;
+  background: #245a9c;
+  color: #fff;
+}
+
+@media (max-width: 650px) {
+  .page {
+    width: min(100% - 24px, 1180px);
+    padding: 24px 0;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+
+  .detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
