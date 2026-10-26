@@ -1,0 +1,200 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Urja Meter Ops API",
+    "version": "1.0.0",
+    "description": "A clean, read-only REST API in front of the legacy Urja Meter Ops portal. The service logs in to the portal itself, so callers send no credentials. Numbers are real numbers and dates are ISO."
+  },
+  "servers": [{ "url": "http://localhost:3000", "description": "Local" }],
+  "tags": [{ "name": "Meters" }],
+  "paths": {
+    "/meters": {
+      "get": {
+        "tags": ["Meters"],
+        "operationId": "listMeters",
+        "summary": "List or search meters",
+        "description": "Returns 20 meters per page. `q` matches meter number or serial. A page past the end returns an empty `data` array, not an error.",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Search text (meter number or serial).",
+            "schema": { "type": "string", "default": "" },
+            "example": "SE65293"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number, starting at 1.",
+            "schema": { "type": "integer", "minimum": 1, "default": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of meters.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/MeterPage" } }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "502": { "$ref": "#/components/responses/UpstreamError" }
+        }
+      }
+    },
+    "/meters/{id}": {
+      "get": {
+        "tags": ["Meters"],
+        "operationId": "getMeter",
+        "summary": "Get one meter with its location",
+        "parameters": [{ "$ref": "#/components/parameters/MeterId" }],
+        "responses": {
+          "200": {
+            "description": "The meter and its location.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/MeterDetail" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "502": { "$ref": "#/components/responses/UpstreamError" }
+        }
+      }
+    },
+    "/meters/{id}/consumption": {
+      "get": {
+        "tags": ["Meters"],
+        "operationId": "getMeterConsumption",
+        "summary": "Get a meter's readings",
+        "description": "Readings come every 30 minutes. `kwh` and `kvah` are running totals (the meter's cumulative reading), not usage per interval. To get usage, subtract one reading from the one before it.",
+        "parameters": [{ "$ref": "#/components/parameters/MeterId" }],
+        "responses": {
+          "200": {
+            "description": "The meter's readings, oldest first.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Consumption" } }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "502": { "$ref": "#/components/responses/UpstreamError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "MeterId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Meter id, for example J100000.",
+        "schema": { "type": "string" },
+        "example": "J100000"
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "The request was invalid (for example, `page` is not a whole number of 1 or more).",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "example": { "error": "bad_request", "message": "page must be a whole number >= 1" }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "No meter with that id.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "example": { "error": "not_found", "message": "No meter J999999" }
+          }
+        }
+      },
+      "UpstreamError": {
+        "description": "The portal behind this API failed or could not be reached.",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "example": { "error": "upstream_error", "message": "Portal 500 on /portal/meters/search" }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Meter": {
+        "type": "object",
+        "required": ["meterId", "serialNo", "make", "phaseType", "installStatus", "dtCode"],
+        "properties": {
+          "meterId": { "type": "string", "example": "J100004" },
+          "serialNo": { "type": "string", "example": "SE65293" },
+          "make": { "type": "string", "description": "Manufacturer, for example HPL, L&T, Genus, Allied.", "example": "Genus" },
+          "phaseType": { "type": "string", "description": "For example `single` or `three`.", "example": "single" },
+          "installStatus": { "type": "string", "description": "For example `Installed`, `Faulty` or `Decommissioned`.", "example": "Faulty" },
+          "dtCode": { "type": "string", "description": "Code of the distribution transformer the meter belongs to.", "example": "DT-005" }
+        }
+      },
+      "MeterPage": {
+        "type": "object",
+        "required": ["data", "page", "pageSize", "total", "totalPages"],
+        "properties": {
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Meter" } },
+          "page": { "type": "integer", "example": 1 },
+          "pageSize": { "type": "integer", "example": 20 },
+          "total": { "type": "integer", "description": "Number of meters matching the search.", "example": 403 },
+          "totalPages": { "type": "integer", "example": 21 }
+        }
+      },
+      "Location": {
+        "type": "object",
+        "required": ["latitude", "longitude"],
+        "properties": {
+          "latitude": { "type": "number", "example": 26.9389610024799 },
+          "longitude": { "type": "number", "example": 75.8309569614685 }
+        }
+      },
+      "MeterDetail": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Meter" },
+          {
+            "type": "object",
+            "required": ["location"],
+            "properties": { "location": { "$ref": "#/components/schemas/Location" } }
+          }
+        ]
+      },
+      "Reading": {
+        "type": "object",
+        "required": ["timestamp", "kwh", "kvah", "voltageR"],
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$",
+            "description": "ISO date and time as given by the portal. No timezone, because the portal does not say which one it uses.",
+            "example": "2026-06-23T23:30:00"
+          },
+          "kwh": { "type": "number", "description": "Running total of active energy (kWh).", "example": 48438.74 },
+          "kvah": { "type": "number", "description": "Running total of apparent energy (kVAh).", "example": 52313.84 },
+          "voltageR": { "type": "number", "description": "Voltage on the R phase (volts).", "example": 226 }
+        }
+      },
+      "Consumption": {
+        "type": "object",
+        "required": ["meterId", "count", "data"],
+        "properties": {
+          "meterId": { "type": "string", "example": "J100000" },
+          "count": { "type": "integer", "description": "Number of readings in `data`.", "example": 337 },
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/Reading" } }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["error", "message"],
+        "properties": {
+          "error": { "type": "string", "example": "not_found" },
+          "message": { "type": "string", "example": "No meter J999999" }
+        }
+      }
+    }
+  }
+}
