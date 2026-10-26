@@ -1,4 +1,7 @@
-const API_URL = __API_URL__.replace(/\/$/, "");
+const API_URL = (
+  __API_URL__ ||
+  `${window.location.protocol}//${window.location.hostname}:${__API_PORT__}`
+).replace(/\/$/, "");
 
 export async function getData(url, options = {}) {
   const response = await fetch(`${API_URL}${url}`, {

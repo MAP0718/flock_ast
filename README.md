@@ -12,7 +12,7 @@ The frontend asks for a portal email and password. The backend checks them with 
 
 ## Requirements
 
-- Node.js 20.6 or newer (the backend start command uses Node's `--env-file` option).
+- Node.js 20.12 or newer (the backend loads `.env` using Node's `process.loadEnvFile`).
 - The portal account details you are authorized to use.
 
 ## Setup
@@ -26,14 +26,14 @@ cd ..\frontend
 npm install
 ```
 
-Create environment files from the examples if they do not exist, then replace the example domains with your actual deployment URLs:
+Create environment files from the examples if they do not exist. For deployment, replace the example domains with your actual service URLs:
 
 ```powershell
 Copy-Item backend\.env.example backend\.env
 Copy-Item frontend\.env.example frontend\.env
 ```
 
-The backend environment configures the API port, upstream portal URL, and allowed frontend origins. The frontend environment configures its server port and the API URL included in the frontend build. These `.env` files are ignored by Git; never commit them. Set the real frontend and API URLs in the deployment environment before building or starting the services.
+The backend environment configures the API port, upstream portal URL, and allowed frontend origins. The frontend environment configures its server port and, for deployment, the API URL included in the frontend build. Locally, a blank `API_URL` makes the frontend use the browser's current host and `API_PORT`. These `.env` files are ignored by Git; never commit them.
 
 ## Run locally
 
@@ -51,7 +51,7 @@ cd frontend
 npm run dev
 ```
 
-Open the frontend URL configured for your deployment. For local development, set the frontend and API URLs in their `.env` files first. Stop each server with `Ctrl+C` in its terminal.
+Open the frontend URL configured for your deployment. Locally, the blank `API_URL` uses the frontend's current hostname and `API_PORT`; the backend allows the standard local frontend origins in development. Stop each server with `Ctrl+C` in its terminal.
 
 ## Features
 

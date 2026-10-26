@@ -71,10 +71,11 @@ app.post("/auth/login", async (req, res, next) => {
       portalCookie,
       expiresAt: Date.now() + sessionLength,
     });
+
     res.cookie(sessionCookie, sessionId, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      secure: true,
       maxAge: sessionLength,
       path: "/",
     });
@@ -98,7 +99,12 @@ app.post("/auth/logout", (req, res) => {
     .find((part) => part.startsWith(`${sessionCookie}=`))
     ?.split("=")[1];
   if (sessionId) sessions.delete(sessionId);
-  res.clearCookie(sessionCookie, { httpOnly: true, sameSite: "lax", path: "/" });
+  res.clearCookie(sessionCookie, {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+    path: "/",
+  });
   res.json({ authenticated: false });
 });
 
